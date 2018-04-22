@@ -1,0 +1,27 @@
+{
+  "name": "node-mentoring",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node ./app.js",
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winrono/node-mentoring.git"
+  },
+  "author": "Roman Nosovich <romanmail.by@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/winrono/node-mentoring/issues"
+  },
+  "homepage": "https://github.com/winrono/node-mentoring#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "nodemon": "^1.17.3"
+  }
+}
