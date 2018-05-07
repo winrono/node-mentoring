@@ -1,8 +1,5 @@
 import csv from 'csvtojson';
 import fs from 'fs';
-import { promisify } from 'util';
-
-const readFileSync = promisify(fs.readFileSync);
 
 export class Importer {
     import(path) {
