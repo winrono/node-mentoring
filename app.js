@@ -15,7 +15,7 @@ const importer = new Importer();
 dirWatcher.on('changed', (path) => {
     importer.import(path).then((json) => {
         console.log(json);
-    })
+    });
 });
 
 // dirWatcher.on('changed', (path) => {
