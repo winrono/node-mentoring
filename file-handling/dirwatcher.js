@@ -14,13 +14,13 @@ export class DirWatcher extends EventEmitter {
     }
 
     watch(path, delay) {
-
+        this.stopWatching = false;
         //using setTimeout approach to make sure that dirwatcher is able to handle arbitrary number of CSV files without overlapping
         const action = async () => {
 
             const files = await readdirAsync(path);
 
-            await Promise.all(files.map(async (filename) => {
+            await Promise.all(files.map((filename) => {
 
                 const fullPath = path + '/' + filename;
                 if (!this.processedFiles.includes(filename)) {
@@ -29,11 +29,15 @@ export class DirWatcher extends EventEmitter {
                 };
 
             }));
-
-            setTimeout(action, delay);
+            if (!this.stopWatching) {
+                setTimeout(action, delay);
+            }
         };
-
         action();
+    }
+
+    unwatch() {
+        this.stopWatching = true;
     }
 
     //alternative implementation if file should be processed after modification

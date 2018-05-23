@@ -15,9 +15,7 @@ const importer = new Importer();
 dirWatcher.on('changed', (path) => {
     importer.import(path).then((json) => {
         console.log(json);
+    }).catch((reason)=>{
+        console.log(`Failed to process file with path ${path} due to following error: ${reason}`);
     });
 });
-
-// dirWatcher.on('changed', (path) => {
-//     console.log(importer.importSync(path));
-// });
