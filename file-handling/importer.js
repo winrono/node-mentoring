@@ -1,13 +1,16 @@
 import csv from 'csvtojson';
 import fs from 'fs';
 import readline from 'readline';
+import os from 'os';
 
 export class Importer {
     import(path) {
         return new Promise((resolve, reject) => {
-            csv().fromFile(path).on('end_parsed', (json) => {
+            csv().fromFile(path).then((json) => {
                 resolve(json);
-            });
+            }).catch((reason) => {
+                reject(reason);
+            });      
         });
     }
     //async implementation without library usage
@@ -17,7 +20,12 @@ export class Importer {
             let objects = [];
             let columns;
 
-            const reader = readline.createInterface(fs.createReadStream(path));
+            let rs = fs.createReadStream(path);
+            rs.on('error', (reason) => {
+                reject(reason);
+            });
+
+            const reader = readline.createInterface(rs);
 
             reader.on('line', (line) => {
                 const values = line.split(',');
@@ -25,11 +33,7 @@ export class Importer {
                 if (!columns) {
                     columns = values;
                 } else {
-                    const obj = {};
-                    columns.forEach((column, index) => {
-                        obj[column] = values[index];
-                    });
-                    objects.push(obj);
+                    objects.push(this.createObject(columns, values));
                 }
             });
 
@@ -42,20 +46,30 @@ export class Importer {
     //csvtojson doesn't provide sync ways to convert csv to json
     //so I decided to not use yet another library and provided simple implementation instead
     importSync(path) {
-        //processing only non-empty lines
-        const lines = fs.readFileSync(path, 'utf8').split('\r\n').filter(Boolean);
-        const columns = lines[0].split(',');
+        //using os.EOL as it's cross-platform (\n on POSIX, \r\n on Windows)
+        const lines = fs.readFileSync(path, 'utf8').split(os.EOL).filter(Boolean);
+        let columns = [];
         let objects = [];
 
-        //skip first line as it's header
-        for (let i = 1; i < lines.length; i++) {
-            const values = lines[i].split(',');
-            const obj = {};
-            columns.forEach((column, index) => {
-                obj[column] = values[index];
-            });
-            objects.push(obj);
-        }
+        lines.reduce((previous, current, index) => {
+            const values = current.split(',');
+            //line with 0th index contains columns
+            if (index === 0) {
+                columns = values;
+            } else {
+                previous.push(this.createObject(columns, values));
+            }
+            return previous;
+        }, objects);
         return JSON.stringify(objects);
+    }
+
+    createObject(columns, values) {
+        const obj = {};
+        columns.reduce((previous, current, index) => {
+            previous[current] = values[index];
+            return previous;
+        }, obj);
+        return obj;
     }
 }
