@@ -1,8 +1,10 @@
 import { EventEmitter } from 'events';
 import fs from 'fs';
 import { promisify } from 'util';
+import pathModule from 'path';
 
 const readdirAsync = promisify(fs.readdir);
+const statAsync = promisify(fs.stat);
 
 //used by alternative version
 //const statAsync = promisify(fs.stat);
@@ -19,13 +21,17 @@ export class DirWatcher extends EventEmitter {
         const action = async () => {
 
             const files = await readdirAsync(path);
-
-            await Promise.all(files.map((filename) => {
+            await Promise.all(files.map(async (filename) => {
 
                 const fullPath = path + '/' + filename;
                 if (!this.processedFiles.includes(filename)) {
                     this.processedFiles.push(filename);
-                    this.emit('changed', fullPath);
+                    const stats = await statAsync(fullPath);
+                    const extension = pathModule.extname(fullPath);
+                    //skipping directories and non-csv files
+                    if (!stats.isDirectory() && extension === ".csv") {
+                        this.emit('changed', fullPath);
+                    }
                 };
 
             }));
