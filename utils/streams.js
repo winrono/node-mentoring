@@ -90,6 +90,8 @@ export class Streams {
     }
     async cssBundler(cssPath) {
         const files = await readdirAsync(cssPath);
+        //adding content of file from url https://epa.ms/nodejs18-hw3-css
+        files.push("../data/epam.css");
         const destionationFilename = 'bundle.css';
         const results = await Promise.all(files.map(async (filename) => {
 
@@ -107,6 +109,5 @@ export class Streams {
         fs.writeFile(`${cssPath}/${destionationFilename}`, bundledCss, (err) => {
             if (err) throw err;
         });
-        //TODO: to check point "c" in task #7 regarding adding content of file from URL https://epa.ms/nodejs18-hw3-css
     }
 }
