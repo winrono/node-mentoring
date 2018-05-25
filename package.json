@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --exec babel-node ./app.js",
+    "start": "nodemon babel-register.js --ignore ./data -- --action=cssBundler --path=./css --help",
     "test": ""
   },
   "repository": {
@@ -25,6 +25,8 @@
     "nodemon": "^1.17.3"
   },
   "dependencies": {
-    "csvtojson": "^2.0.0"
+    "csvtojson": "^2.0.0",
+    "minimist": "^1.2.0",
+    "through2": "^2.0.3"
   }
 }
