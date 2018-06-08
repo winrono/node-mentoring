@@ -4,7 +4,14 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon babel-register.js --ignore ./data -- --action=cssBundler --path=./css --help",
+    "start": "nodemon babel-register.js --ignore ./data",
+    "help" : "npx babel-node ./utils/streams.js --help",
+    "reverse": "npx babel-node ./utils/streams.js --action=reverse",
+    "transform" : "npx babel-node ./utils/streams.js --action=transform",
+    "outputFile" : "npx babel-node ./utils/streams.js --action=outputFile --file=./app.js",
+    "convertFromFile" : "npx babel-node ./utils/streams.js --action=convertFromFile --file=./data/testfile.csv",
+    "convertToFile" : "npx babel-node ./utils/streams.js --action=convertToFile --file=./data/testfile.csv",
+    "cssBundler" : "npx babel-node ./utils/streams.js --action=cssBundler --path=./css",
     "test": ""
   },
   "repository": {

@@ -1,7 +1,6 @@
 import config from './config/config.json';
 import { User, Product } from './models';
 import { DirWatcher, Importer } from './file-handling';
-import {Streams} from './utils/streams';
 
 console.log(config.name);
 
@@ -20,5 +19,3 @@ dirWatcher.on('changed', (path) => {
         console.log(`Failed to process file with path ${path} due to following error: ${reason}`);
     });
 });
-
-let streams = new Streams();
