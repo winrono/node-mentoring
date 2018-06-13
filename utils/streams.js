@@ -4,6 +4,8 @@ import fs from 'fs';
 import csv from 'csvtojson';
 import { promisify } from 'util';
 import path from 'path';
+import { Transform } from 'stream';
+import os from 'os';
 
 const readdirAsync = promisify(fs.readdir);
 const statAsync = promisify(fs.stat);
@@ -66,36 +68,45 @@ if (firstArg === undefined || firstArg == 'help' || firstArg == 'h') {
 
 function csvToJson(filePath) {
     return new Promise((resolve, reject) => {
-        try {
-            const stats = fs.statSync(filePath);
-            if (!stats.isDirectory() && path.extname(filePath) === '.csv') {
-                csv()
-                    .fromFile(filePath)
-                    .then(json => {
-                        resolve(JSON.stringify(json));
-                    })
-                    .catch(reason => {
-                        reject(
-                            `Failed to process file due to reason: ${reason}`
-                        );
-                    });
-            } else {
-                reject(
-                    `Provided path ${filePath} is directory or doesn't have .csv extension`
-                );
-            }
-        } catch (error) {
-            reject(error);
+        const stats = fs.statSync(filePath);
+        if (!stats.isDirectory() && path.extname(filePath) === '.csv') {
+            csv()
+                .fromFile(filePath)
+                .then(json => {
+                    resolve(JSON.stringify(json));
+                })
+                .catch(reason => {
+                    reject(`Failed to process file due to reason: ${reason}`);
+                });
+        } else {
+            reject(
+                `Provided path ${filePath} is directory or doesn't have .csv extension`
+            );
         }
     });
 }
 
 export function reverse() {
-    process.stdin.pipe(process.stdout);
+    //using Transform instead of though2 here to check alternative ways of data transforming
+    const tr = new Transform({
+        transform(chunk, encoding, callback) {
+            //using trim to remove EOL (otherwise, for example, 123\r\n will be transformed to \r\n123 causing inconvenience)
+            this.push(
+                chunk
+                    .toString()
+                    .trim()
+                    .split('')
+                    .reverse('')
+                    .join('') + os.EOL
+            );
+            callback();
+        }
+    });
+    process.stdin.pipe(tr).pipe(process.stdout);
 }
 
 export function transform() {
-    var tr = through(function(chunk, enc, callback) {
+    const tr = through(function(chunk, enc, callback) {
         this.push(chunk.toString().toUpperCase());
         callback();
     });
