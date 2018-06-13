@@ -46,8 +46,11 @@ const args = minimist(process.argv.slice(2), {
 
 const action = module.exports[args.action];
 const firstArg = Object.keys(args)[1];
+const helpArgs = ['help', 'h'];
+const cssBundlerFunctionName = 'cssBundler';
+
 //if firstArg is undefined then options were not provided
-if (firstArg === undefined || firstArg == 'help' || firstArg == 'h') {
+if (firstArg === undefined || helpArgs.some(arg => arg === firstArg)) {
     console.log(
         'Please provide --action parameter to execute one of following actions:'
     );
@@ -55,7 +58,7 @@ if (firstArg === undefined || firstArg == 'help' || firstArg == 'h') {
         console.log(`Action '${key}' ${value}`);
     });
 } else if (action) {
-    if (args.action == 'cssBundler') {
+    if (args.action == cssBundlerFunctionName) {
         action(args.path);
     } else {
         action(args.file);
@@ -67,9 +70,10 @@ if (firstArg === undefined || firstArg == 'help' || firstArg == 'h') {
 }
 
 function csvToJson(filePath) {
+    const csvExtension = '.csv';
     return new Promise((resolve, reject) => {
         const stats = fs.statSync(filePath);
-        if (!stats.isDirectory() && path.extname(filePath) === '.csv') {
+        if (!stats.isDirectory() && path.extname(filePath) === csvExtension) {
             csv()
                 .fromFile(filePath)
                 .then(json => {
@@ -145,10 +149,11 @@ export function convertToFile(filePath) {
 }
 
 export async function cssBundler(cssPath) {
+    const epamCssFilePath = '../data/epam.css';
+    const destionationFilename = 'bundle.css';
     const files = await readdirAsync(cssPath);
     //adding content of file from url https://epa.ms/nodejs18-hw3-css
-    files.push('../data/epam.css');
-    const destionationFilename = 'bundle.css';
+    files.push(epamCssFilePath);
     const results = await Promise.all(
         files.map(async filename => {
             const fullPath = cssPath + '/' + filename;
