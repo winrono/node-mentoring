@@ -12,6 +12,10 @@
         "convertFromFile": "npx babel-node ./utils/streams.js --action=convertFromFile --file=./data/testfile.csv",
         "convertToFile": "npx babel-node ./utils/streams.js --action=convertToFile --file=./data/testfile.csv",
         "cssBundler": "npx babel-node ./utils/streams.js --action=cssBundler --path=./css",
+        "plainTextServer": "npx babel-node ./http-servers/plain-text-server.js",
+        "htmlServer": "npx babel-node ./http-servers/html-server.js",
+        "jsonServer": "npx babel-node ./http-servers/json-server.js",
+        "echoServer": "npx babel-node ./http-servers/echo-server.js",
         "test": ""
     },
     "repository": {
@@ -34,6 +38,7 @@
     },
     "dependencies": {
         "csvtojson": "^2.0.0",
+        "express": "^4.16.3",
         "minimist": "^1.2.0",
         "through2": "^2.0.3"
     }
