@@ -8,7 +8,7 @@ const user = new User();
 const product = new Product();
 
 const dirWatcher = new DirWatcher();
-dirWatcher.watch("./data", 5000);
+dirWatcher.watch('./data', 5000);
 
 const importer = new Importer();
 

@@ -29,10 +29,10 @@ export class DirWatcher extends EventEmitter {
                     const stats = await statAsync(fullPath);
                     const extension = pathModule.extname(fullPath);
                     //skipping directories and non-csv files
-                    if (!stats.isDirectory() && extension === ".csv") {
+                    if (!stats.isDirectory() && extension === '.csv') {
                         this.emit('changed', fullPath);
                     }
-                };
+                }
 
             }));
             if (!this.stopWatching) {

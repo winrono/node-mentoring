@@ -1,5 +1,5 @@
 export class User {
     constructor() {
-        console.log("User module");
+        console.log('User module');
     }
 }
